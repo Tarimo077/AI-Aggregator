@@ -1,0 +1,417 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:wght@400;600&display=swap');
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    /*overflow: hidden; *//* Prevent body from having a scrollbar */
+    background-color: #495057;
+    color: #fff;
+    transition: all 0.3s; /* Add transition for smooth collapse effect */
+    
+}
+
+.sidebar {
+    width: 15vw; /* Set default width */
+    min-width: 180px;
+    background: #212529;
+    height: 100vh; /* Full height */
+    /*overflow: hidden;*/ /* Prevent sidebar overflow */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Align children to take full height */
+    transition: all 0.3s; /* Add transition for smooth collapse effect */
+}
+
+.sidebar h1 {
+    color: #fff;
+    text-align: center;
+    font-size: 32px;
+    margin-top: 40px;
+}
+
+.sidebar a {
+    display: block;
+    padding: 10px 20px;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    margin-bottom: 10px; /* Add margin between links */
+    transition: margin-left 0.3s;
+    border-bottom: 2px solid #fff;
+    padding: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.sidebar a:hover {
+    color: #495057;
+    margin-left: 50px;
+    transition: 0.5s;
+}
+
+.sidebar h5 {
+    background-color: #212529;
+    text-align: center;
+    color: #fff;
+    font-size: 10px;
+    padding: 5px; /* Ensure padding for sticky footer */
+}
+
+.content {
+    flex-grow: 1;
+    padding: 1rem;
+    margin-left: 250px; /* Set default margin */
+    transition: margin-left 0.5s; /* Add transition for smooth collapse effect */
+}
+
+.collapse-btn {
+    position: absolute;
+    z-index: 10000;
+    top: 0px;
+    left: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #fff;
+    transition: left 0.5s; /* Add transition for smooth collapse effect */
+}
+
+.collapsed .sidebar {
+    width: 0;
+    padding: 0;
+    min-width: 0;
+    overflow: hidden; /* Ensure content is hidden */
+}
+
+.collapsed .content {
+    margin-left: 150px;
+}
+
+.collapsed .collapse-btn {
+    left: 10px;
+}
+
+.body-container {
+    margin-top: 50px;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 80vw;
+}
+
+
+.rounded-container {
+    background-color: #212529;
+    padding: 10px 20px; /* Add padding for better spacing inside the labels */
+    text-align: center;
+    flex: 1; /* Make each label take an equal amount of space */
+    margin: 0 10px; /* Add space between the labels */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border-right: 10px solid #10b010;
+    width: 350px;
+    animation-duration: 2s;
+    animation-name: slidein;
+}
+.rounded-container1 {
+    background-color: #212529;
+    padding: 10px 20px; /* Add padding for better spacing inside the labels */
+    text-align: center;
+    flex: 1; /* Make each label take an equal amount of space */
+    margin: 0 10px; /* Add space between the labels */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border-right: 10px solid #ff0000;
+    width: 350px;
+    animation-duration: 2s;
+    animation-name: slidein;
+}
+.rounded-container2 {
+    background-color: #212529;
+    padding: 10px 20px; /* Add padding for better spacing inside the labels */
+    text-align: center;
+    flex: 1; /* Make each label take an equal amount of space */
+    margin: 0 10px; /* Add space between the labels */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border-right: 10px solid #1500ff;
+    width: 350px;
+    animation-duration: 2s;
+    animation-name: slidein;
+}
+.rounded-container3 {
+    background-color: #212529;
+    padding: 10px 20px; /* Add padding for better spacing inside the labels */
+    text-align: center;
+    flex: 1; /* Make each label take an equal amount of space */
+    margin: 0 10px; /* Add space between the labels */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border-right: 10px solid #fffb00;
+    width: 350px;
+    animation-duration: 2s;
+    animation-name: slidein;
+}
+.sticky {
+    text-align: left;
+    color: #fff;
+    left: 0;
+    font-size: 10px;
+    bottom:0;
+}
+
+
+.dropdown {
+    border-radius:8px;
+    border:3px solid #212529;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 10px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #495057;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+    color: #fff;
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pie-chart-div {
+        display: flex;
+        justify-content: space-evenly;
+        border: none;
+        flex-direction: row;
+        margin-top: 3vh;
+        background-color: #212529;
+        width:101%;
+        margin-left: 0.6vw;
+        animation-duration: 2s;
+        animation-name: slide-up;
+        border-right: 10px solid #e707cc;
+       /* border-radius: 15px; */
+       /* padding: 15px;
+        margin-left: 5px; */
+}
+
+.stats-container {
+    width: 83vw;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.table-div {
+    justify-content: space-evenly;
+    align-items: center;
+    display: flex;
+    margin-top: 20px;
+    flex-direction: column;
+    margin-left: 5vh;
+    animation-duration: 2s;
+    animation-name: slide-up;
+}
+
+.single-pie {
+    width: 50%;
+}
+
+.greeting-bar {
+    background-color: #212529;
+    color: white;
+    padding: 5px;
+    text-align: right;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1000;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+.table {
+    width: 100%;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-collapse: collapse;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.table_headers {
+    background-color: #212529;
+    text-align: center;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 20px;
+}
+
+.table_content {
+    text-align: center;
+    border: 2px solid #fff;
+    padding: 15px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.step-links {
+    display: flex;
+    gap: 10px;
+}
+
+.step-links a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+
+.step-links span.current {
+    font-weight: bold;
+}
+
+.container {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+form {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    align-items: end;
+}
+
+form input[type="text"] {
+    padding: 5px;
+    font-size: 14px;
+}
+
+form button {
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #1500ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #0e01a4;
+}
+
+/* Add this to your existing style.css */
+
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    right: 0;
+    animation-duration: 2s;
+    animation-name: slidein;
+}
+
+.search-container form {
+    display: flex;
+    align-items: center;
+}
+
+.search-container input[type="text"] {
+    margin-right: 10px;
+}
+
+.clear-search {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: #ff0000;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 0px;
+    margin-left: 10px;
+    font-size: 13px;
+}
+
+.clear-search:hover {
+    background-color: #910505;
+}
+
+.details-link {
+    background-color: #212529;
+    color: #fff;
+    border: 1px solid #212529;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 20px;
+    font-size: 15px;
+    display: block;
+}
+
+.details-link:hover {
+    background-color: #000;
+    
+}
+
+@keyframes slidein {
+    from {
+      translate: 150vw 0;
+      scale: 200% 1;
+    }
+  
+    to {
+      translate: 0 0;
+      scale: 100% 1;
+    }
+  }
+
+  @keyframes slide-up {
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+
+

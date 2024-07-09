@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+            Powerpay Africa
+        {% endblock %}
+    </title>
+    <!-- Include jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Include jQuery UI (Datepicker) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <!-- Optional: Customize Datepicker theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="greeting-bar" id="greeting-bar"></div>
+    <div class="sidebar">
+        <h1>PowerPay Africa</h1>
+        <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}"><i class="fa fa-home" aria-hidden="true"></i>  Home</a>
+        <a href="{% url 'connections_page' %}"><i class="fa fa-plug" aria-hidden="true"></i> Connections</a>
+        <a href="https://powerpayafrica.com/new-ticket/" target="_blank" rel="noopener noreferrer"><i class="fa fa-phone" aria-hidden="true"></i> Support</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+        {% endif %}
+        <h5 class="sticky">© 2024 Powerpay Africa. All Rights Reserved</h5>
+    </div>
+    <main>
+        <!-- <span class="collapse-btn" onclick="toggleSidebar()">&#9776;</span> -->
+        {% block content %}
+        {% endblock %}
+    </main>
+    <script>
+        function toggleSidebar() {
+            document.body.classList.toggle('collapsed');
+        }
+        // Function to format the time
+        function formatTime(date) {
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            let seconds = date.getSeconds();
+            let ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0'+minutes : minutes;
+            seconds = seconds < 10 ? '0'+seconds : seconds;
+            let strTime = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+            return strTime;
+        }
+
+        // Function to update the greeting message
+        function updateGreeting() {
+            const now = new Date();
+            const hours = now.getHours();
+            let greeting;
+
+            if (hours < 12) {
+                greeting = "👋 Good Morning";
+            } else if (hours < 18) {
+                greeting = "👋 Good Afternoon";
+            } else {
+                greeting = "👋 Good Evening";
+            }
+
+            // Assuming you have a variable `username` in your template context
+            const username = "{{ user.first_name }}";
+            const time = formatTime(now);
+            document.getElementById('greeting-bar').innerText = ` ⌚ ${time} | ${greeting}, ${username}`;
+        }
+
+        // Call the updateGreeting function initially
+        updateGreeting();
+        
+        // Update the greeting every second
+        setInterval(updateGreeting, 1000);
+    </script>
+</body>
+</html>
