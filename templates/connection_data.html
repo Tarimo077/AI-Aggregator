@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+<div class="body-container">
+<h2>Meter data for {{ meter_number }}</h2> 
+<div style="padding: 10px; margin-bottom:10px"> 
+    <div style="padding: 10px; margin-bottom:10px">
+    <label>Choose time range: </label>
+    <select name="range" id="rangeDropdown" class="dropdown">
+        <option value="9999999" {% if selected_range == '9999999' %}selected{% endif %}>All Time</option>
+        <option value="5" {% if selected_range == '5' %}selected{% endif %}>5 min</option>
+        <option value="30" {% if selected_range == '30' %}selected{% endif %}>30 min</option>
+        <option value="60" {% if selected_range == '60' %}selected{% endif %}>1 hr</option>
+        <option value="180" {% if selected_range == '180' %}selected{% endif %}>3 hrs</option>
+        <option value="720" {% if selected_range == '720' %}selected{% endif %}>12 hrs</option>
+        <option value="1440" {% if selected_range == '1440' %}selected{% endif %}>24 hrs</option>
+        <option value="4320" {% if selected_range == '4320' %}selected{% endif %}>3 days</option>
+        <option value="10080" {% if selected_range == '10080' %}selected{% endif %}>7 days</option>
+        <option value="20160" {% if selected_range == '20160' %}selected{% endif %}>2 weeks</option>
+        <option value="40320" {% if selected_range == '40320' %}selected{% endif %}>1 month</option>
+        <option value="120960" {% if selected_range == '120960' %}selected{% endif %}>3 months</option>
+        <option value="241920" {% if selected_range == '241920' %}selected{% endif %}>6 months</option>
+        <option value="483840" {% if selected_range == '483840' %}selected{% endif %}>1 year</option>
+        <option value="1451520" {% if selected_range == '1451520' %}selected{% endif %}>3 years</option>
+    </select>
+    </div>
+</div>
+<div class="stats-container">
+    <div class="rounded-container">
+        <label style="font-size:17px;"><i class="fa fa-user" aria-hidden="true" style="color:#10b010;font-size:5vh"></i> Customer Name<br><strong style="font-size:24px;color:#10b010">{{ name }}</strong></label>
+    </div>
+    <div class="rounded-container3">
+        <label style="font-size:17px;"><i class="fa fa-address-card" aria-hidden="true" style="color:#fffb00;font-size:5vh"></i> Customer Reference<br><strong style="font-size:24px;color:#fffb00">{{ reference }}</strong></label>
+    </div>
+    <div class="rounded-container1">
+        <label style="font-size:17px;"><i class="fa fa-bolt" aria-hidden="true" style="color:#ff0000;font-size:5vh"></i> Energy Usage(kWh)<br><strong style="font-size:24px;color:#ff0000">{{ kwhUsed|floatformat:1 }}</strong></label>
+    </div>
+    <div class="rounded-container2">
+        <label style="font-size:17px;"><i class="fa fa-bolt" aria-hidden="true" style="color:#1500ff;font-size:5vh"></i> Energy Purchased(kWh)<br><strong style="font-size:24px;color:#1500ff">{{ kwhBought|floatformat:1 }}</strong></label>
+    </div>
+</div>
+{% if line_chart %}
+<div class="pie-chart-div">{{ line_chart|safe }}</div>
+</div>
+{% else %}
+<div class="pie-chart-div"><strong style="text-align:center;padding:100px;"><i class="fa fa-exclamation-triangle" aria-hidden="true" style="color:#ff0000;font-size:5vh"></i> No Data to show for the selected range</strong></div>
+</div>
+{% endif %}
+
+<script>
+    document.getElementById('rangeDropdown').addEventListener('change', function() {
+        var selectedRange = this.value;
+        window.location.href = '/connection/' + {{meter_number}}+ '/?range=' + selectedRange ;
+    });
+</script>
+
+{% endblock %}
