@@ -14,6 +14,9 @@ body {
     background-color: #495057;
     color: #fff;
     transition: all 0.3s; /* Add transition for smooth collapse effect */
+    overflow-x: hidden;
+    overflow-y: scroll;
+    margin-left: 15vw;
     
 }
 
@@ -27,6 +30,10 @@ body {
     flex-direction: column;
     justify-content: space-between; /* Align children to take full height */
     transition: all 0.3s; /* Add transition for smooth collapse effect */
+    overflow: hidden;
+    position: fixed; /* Make the sidebar fixed */
+    top: 0;
+    left: 0;
 }
 
 .sidebar h1 {
@@ -223,11 +230,12 @@ body {
         flex-direction: row;
         margin-top: 3vh;
         background-color: #212529;
-        width:101%;
+        width:101.5%;
         margin-left: 0.6vw;
         animation-duration: 2s;
         animation-name: slide-up;
         border-right: 10px solid #e707cc;
+        margin-bottom: 10px;
        /* border-radius: 15px; */
        /* padding: 15px;
         margin-left: 5px; */

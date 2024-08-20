@@ -49,13 +49,18 @@
             let minutes = date.getMinutes();
             let seconds = date.getSeconds();
             let ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12; // the hour '0' should be '12'
-            minutes = minutes < 10 ? '0'+minutes : minutes;
-            seconds = seconds < 10 ? '0'+seconds : seconds;
+            
+            
+            // Properly handle 12 AM and 12 PM
+            //hours = hours % 12;
+            hours = hours === 0 ? 12 : hours; // the hour '0' should be '12'
+            
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            
             let strTime = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
             return strTime;
-        }
+        }        
 
         // Function to update the greeting message
         function updateGreeting() {

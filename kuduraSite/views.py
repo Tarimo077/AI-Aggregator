@@ -83,9 +83,38 @@ def homepage(request):
     purchases_pie.update_traces(hole=.6, hovertemplate='<b>Customer Ref: %{label}<br>Energy Purchases: %{value} kWh</b>')
     purchases_pie.update_annotations(font=dict(color="#fff"))
     purchases_pie = pio.to_html(purchases_pie, full_html=False)
-    ml_predictions = predict()
+    ml_predictions = predict_new_data()
+    count_dict = {}
 
-
+    # Iterate through each item in the array
+    for item in ml_predictions:
+        if isinstance(item, dict):  # Process dictionary items
+            for key, value in item.items():
+                if key in count_dict:
+                    count_dict[key] += (value*2)/60
+                else:
+                    count_dict[key] = (value*2)/60
+        elif isinstance(item, str):  # Process string items
+            if item in count_dict:
+                count_dict[item] += 2/60
+            else:
+                count_dict[item] = 2/60
+    ml_keys=[]
+    ml_vals=[]    
+    for key, value in count_dict.items():
+        ml_keys.append(key)
+        ml_vals.append(value)
+    ml_vals_new = []
+    for l in ml_vals:
+        l = round(l,1)
+        ml_vals_new.append(l)
+    ml_pie = create_pie_chart(ml_keys, ml_vals_new)
+    ml_pie.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                                 legend_font_color="#fff", title="METER DISAGREGATION",
+                                 title_font_color="#fff", title_x=0.45, autosize=True,
+                                 legend_title_text='Appliances')
+    ml_pie.update_traces(hole=.6, hovertemplate='<b>Appliance: %{label}<br>Time: %{value} minutes</b>')
+    ml_pie = pio.to_html(ml_pie, full_html=False)
     context = {
         "kwhUsed": total_kwh_used,
         "kwhBought": total_kwh_bought,
@@ -93,7 +122,8 @@ def homepage(request):
         "selected_range": str(range_value),
         "consumption_pie": consumption_pie,
         "purchases_pie": purchases_pie,
-        "predictions": ml_predictions
+        "predictions": count_dict,
+        "ml_pie": ml_pie
     }
 
     return render(request, 'index.html', context)
@@ -135,17 +165,14 @@ def connections_page(request):
     data = fetch_data("kuduraCustomers")
     data = pd.DataFrame(data)
     data['time'] = pd.to_datetime(data['time'], format='%Y-%m-%dT%H:%M:%S.%fZ')
-    # Handle search query
     query = request.GET.get('q')
     if query:
         data = data[data.apply(lambda row: query.lower() in row['name'].lower() or
                                             query.lower() in row['reference'].lower() or
                                             query.lower() in row['meterNumber'].lower(), axis=1)]
 
-    # Convert the DataFrame to a list of dictionaries
     connections_list = data.to_dict(orient='records')
 
-    # Implement pagination with 10 items per page
     paginator = Paginator(connections_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -206,46 +233,29 @@ def connection_data_page(request, meter_number):
 
     return render(request, 'connection_data.html', context)
 
-def predict():
-    readable_predictions = []
-    predictions = main_pred(file_path_test)
-    for pred in predictions:
-        readable_pred = {}
-        is_known = False
-        for i in range(len(pred)):
-            readable_pred[appliance_labels[i]] = int(pred[i])
-            if pred[i] == 1:
-                is_known = True
-        if not is_known:
-            readable_pred['Unknown'] = 1
-        readable_predictions.append(readable_pred)
-    return readable_predictions
-
-
-def predict_new_data_with_anomaly_detection(multi_output_rf, iso_forest, scaler, new_data, appliance_labels):
-    new_data_scaled = scaler.transform(new_data)
-    anomalies = iso_forest.predict(new_data_scaled)
-    results = []
-    for idx, (pred, anomaly) in enumerate(zip(multi_output_rf.predict(new_data_scaled), anomalies)):
-        if anomaly == -1:
-            results.append("Unknown or anomalous appliance detected")
-        else:
-            on_appliances = [appliance_labels[i] for i, state in enumerate(pred) if state == 1]
-            appliances_on = ', '.join(on_appliances) if on_appliances else "No appliances detected"
-            results.append(f"ON appliances: {appliances_on}")
-    return results
-
-
 def preprocess_data(df):
-    df['energy(kWh)'] = df['energy(kWh)'] * 2
-    df = df.drop(columns=['timestamp(DATETIME)', 'time'], errors='ignore')
-    df.fillna(df.median(), inplace=True) 
+    df['energy(kWh)'] = df['energy(kWh)'].apply(lambda x: x * 2)
+    df.drop(columns=['timestamp(DATETIME)', 'time'], errors='ignore', inplace=True)
+    numeric_medians = df.median(numeric_only=True)
+    df.fillna(numeric_medians, inplace=True)
     return df
 
 
-def main_pred(file_path):    
-    new_data_df = pd.read_csv(file_path)
+def predict_new_data():
+    new_data_df = pd.read_csv(file_path_test)
     new_data_df = preprocess_data(new_data_df)
-    new_data = new_data_df.values
-    predictions = predict_new_data_with_anomaly_detection(multi_output_rf, iso_forest, scaler, new_data, appliance_labels)
-    return predictions
+
+    new_data_scaled = scaler.transform(new_data_df)
+
+    anomalies = iso_forest.predict(new_data_scaled)
+
+    predictions = multi_output_rf.predict(new_data_scaled)
+    readable_predictions = []
+    for pred, anomaly in zip(predictions, anomalies):
+        if anomaly == -1:
+            readable_predictions.append("Unknown or anomalous appliance detected")
+        else:
+            results = {label: pred[i] for i, label in enumerate(appliance_labels) if pred[i] == 1}
+            readable_predictions.append(results or {'No appliances detected': True})
+
+    return readable_predictions

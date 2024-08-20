@@ -76,10 +76,8 @@
         <div class="single-pie">{{ consumption_pie|safe }}</div>
         <div class="single-pie">{{ purchases_pie|safe }}</div>
     </div>  
-    <div>
-       {% for pr in predictions %}
-            <p>{{ pr }}</p>
-        {% endfor %}
+    <div class="pie-chart-div" style="margin-bottom: 10px;">
+        <div class="single-pie">{{ ml_pie|safe }}</div>
     </div> 
     </div>
     <script>
