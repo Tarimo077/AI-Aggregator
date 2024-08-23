@@ -242,7 +242,9 @@ def preprocess_data(df):
 
 
 def predict_new_data():
-    new_data_df = pd.read_csv(file_path_test)
+    #new_data_df = pd.read_csv(file_path_test)
+    new_data_df = fetch_data("migaaMeterData")
+    new_data_df = pd.DataFrame(new_data_df)
     new_data_df = preprocess_data(new_data_df)
 
     new_data_scaled = scaler.transform(new_data_df)
