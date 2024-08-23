@@ -91,14 +91,14 @@ def homepage(request):
         if isinstance(item, dict):  # Process dictionary items
             for key, value in item.items():
                 if key in count_dict:
-                    count_dict[key] += (value*2)/60
+                    count_dict[key] += (value*2)/3600
                 else:
-                    count_dict[key] = (value*2)/60
+                    count_dict[key] = (value*2)/3600
         elif isinstance(item, str):  # Process string items
             if item in count_dict:
-                count_dict[item] += 2/60
+                count_dict[item] += 2/3600
             else:
-                count_dict[item] = 2/60
+                count_dict[item] = 2/3600
     ml_keys=[]
     ml_vals=[]    
     for key, value in count_dict.items():
@@ -113,7 +113,7 @@ def homepage(request):
                                  legend_font_color="#fff", title="METER DISAGREGATION",
                                  title_font_color="#fff", title_x=0.45, autosize=True,
                                  legend_title_text='Appliances')
-    ml_pie.update_traces(hole=.6, hovertemplate='<b>Appliance: %{label}<br>Time: %{value} minutes</b>')
+    ml_pie.update_traces(hole=.6, hovertemplate='<b>Appliance: %{label}<br>Time: %{value} hours</b>')
     ml_pie = pio.to_html(ml_pie, full_html=False)
     context = {
         "kwhUsed": total_kwh_used,
