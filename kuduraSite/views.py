@@ -16,14 +16,14 @@ from django.conf import settings
 import os
 from .preprocessing import preprocess_live_data
 from .data_ingestion import chunk_array
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 import numpy as np
 
 # Define paths to the model and scaler files
 #iso_forest_path = os.path.join(settings.BASE_DIR, 'models', 'iso_forest.pkl')
 scaler_path = os.path.join(settings.BASE_DIR, 'models', 'final_scalerT.pkl')
 #multi_output_rf_path = os.path.join(settings.BASE_DIR, 'models', 'multi_output_rf.pkl')
-file_path_test = os.path.join(settings.BASE_DIR, 'models', 'new_data.csv')
+file_path_test = os.path.join(settings.BASE_DIR, 'models', 'synthetic_test.csv')
 model_path = os.path.join(settings.BASE_DIR, 'models', 'final_modelT.h5')
 # Load model and scaler
 #multi_output_rf = joblib.load(multi_output_rf_path)
@@ -93,6 +93,14 @@ def homepage(request):
     purchases_pie.update_traces(hole=.6, hovertemplate='<b>Customer Ref: %{label}<br>Energy Purchases: %{value} kWh</b>')
     purchases_pie.update_annotations(font=dict(color="#fff"))
     purchases_pie = pio.to_html(purchases_pie, full_html=False)
+    new_dt = pd.read_csv(file_path_test)
+    new_ts = datetime.now()
+    for _,row in new_dt.iterrows():
+        new_data = row.to_dict()
+        predictions = predict_appliance_state(new_data, new_ts)
+        print("Predicted Appliance States:")
+        for idx, pred in enumerate(predictions, start=1):
+            print(f"Chunk {idx}: {pred}")
     #ml_predictions = predict_new_data()
     #count_dict = {}
 
@@ -260,6 +268,7 @@ def predict_appliance_state(new_data, new_timestamp):
         # Map predictions to appliances
         prediction_result = dict(zip(appliance_columns, y_pred[0]))
         predictions.append(prediction_result)
+    return predictions
 
 
 
