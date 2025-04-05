@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-
+{% load custom_filters %}
 {% block title %}
     Kudura: Home
 {% endblock %}
@@ -66,20 +66,33 @@
             <label style="font-size:17px;"><i class="fa fa-plug" aria-hidden="true" style="color:#10b010;font-size:5vh"></i> Active Connections<br><strong style="font-size:24px;color:#10b010">{{ connections }}</strong></label>
         </div>
         <div class="rounded-container1">
-            <label style="font-size:17px;"><i class="fa fa-bolt" aria-hidden="true" style="color:#ff0000;font-size:5vh"></i> Energy Usage(kWh)<br><strong style="font-size:24px;color:#ff0000">{{ kwhUsed|floatformat:1 }}</strong></label>
-        </div>
-        <div class="rounded-container2">
-            <label style="font-size:17px;"><i class="fa fa-bolt" aria-hidden="true" style="color:#1500ff;font-size:5vh"></i> Energy Purchased(kWh)<br><strong style="font-size:24px;color:#1500ff">{{ kwhBought|floatformat:1 }}</strong></label>
+            <label style="font-size:17px;"><i class="fa fa-bolt" aria-hidden="true" style="color:#ff0000;font-size:5vh"></i> Energy Usage(kWh)<br><strong style="font-size:24px;color:#ff0000">{{ kwhUsed|floatformat:4 }}</strong></label>
         </div>
     </div>
     <div class="pie-chart-div">
         <div class="single-pie">{{ consumption_pie|safe }}</div>
-        <div class="single-pie">{{ purchases_pie|safe }}</div>
+        <div class="single-pie">{{ ml_pie|safe }}</div>
     </div>  
-    <div class="pie-chart-div" style="margin-bottom: 10px;">
-       <!-- <div class="single-pie">{{ ml_pie|safe }}</div> -->
-        
-    </div> 
+    <div class="appliance-energy-div">
+        {% for appliance, energy in appliance_energy.items %}
+        <div>
+            <h3>{{ appliance }}</h3>
+            {% if kwhUsed > 0 %}
+            <div style="width: 100%; background-color: #e0e0e0; border-radius: 10px;">
+                <div style="width: {{ appliance_percentages|get_dict_value:appliance }}%; background-color: #4caf50; height: 20px; border-radius: 10px;">
+                    <span style="display: block; color: black; padding-left: 5px; padding-right: 5px; position: relative; top: -3px;text-align:center;">
+                        {{ appliance_percentages|get_dict_value:appliance|floatformat:1 }}%
+                    </span>
+                </div>
+            </div>
+            <h3>{{ energy|floatformat:4 }} kWh</h3>
+            {% else %}
+            <p>No energy data available</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>      
+    
     </div>
     <script>
         // JavaScript for handling range selection change

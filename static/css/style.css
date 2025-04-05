@@ -6,60 +6,101 @@ html, body {
     height: 100%;
     font-family: 'Poppins', sans-serif;
 }
-
+/*
 body {
     display: flex;
     height: 100vh;
-    /*overflow: hidden; *//* Prevent body from having a scrollbar */
     background-color: #495057;
     color: #fff;
-    transition: all 0.3s; /* Add transition for smooth collapse effect */
+    transition: all 0.3s;  
     overflow-x: hidden;
     overflow-y: scroll;
-    margin-left: 15vw;
-    
+    margin-top: 40px;
+} */
+body {
+    display: flex;
+    height: 100vh;
+    overflow: hidden; /* Prevent body from having a scrollbar */
+    color: #fff;
 }
 
+.justbody {
+    width: 100% ; /* Full width minus padding */
+    padding: 20px 10px; /* Consistent padding on sides */
+    overflow-y: auto; /* Enable vertical scrolling */
+    height: 100vh; /* Full viewport height */
+    box-sizing: border-box; /* Include padding in width */
+    padding-top: 30px;
+    overflow-x: auto; /* Prevent horizontal overflow */
+    background-color: #495057;
+}
+
+
+/* Sidebar styles */
 .sidebar {
-    width: 15vw; /* Set default width */
-    min-width: 180px;
+    width: 20%;
     background: #212529;
+    padding-top: 0px;
+    max-width: 250px;
+    min-width: 165px;
     height: 100vh; /* Full height */
-    /*overflow: hidden;*/ /* Prevent sidebar overflow */
+    overflow: hidden; /* Prevent sidebar overflow */
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Align children to take full height */
-    transition: all 0.3s; /* Add transition for smooth collapse effect */
-    overflow: hidden;
-    position: fixed; /* Make the sidebar fixed */
-    top: 0;
-    left: 0;
+    margin-top: 0px;
+    align-items: center;
+    z-index: 1001;
 }
+
+.active-link {
+    background-color: #fff; /* Keep the highlight */
+    padding: 12px 15px;
+    color: #212529 !important;
+    font-weight: bold;
+    position: relative; /* Needed for the pseudo-element */
+    border-radius: 5px; /* Rounded corners on the left */
+    display: flex; /* Ensure proper layout */
+    align-items: center; /* Vertically center the text */
+    width: 50%; /* Restrict width to avoid full sidebar fill */
+}
+
+.active-link::before {
+    content: "";
+    position: absolute;
+    left: 2%;
+    top: 10%;
+    bottom: 10%;
+    width: 5px; /* Thickness of the left bar */
+    background-color: #212529; /* Color of the bar */
+    border-radius: 2px; /* Rounded edges */
+}
+
+
 
 .sidebar h1 {
     color: #fff;
     text-align: center;
+    padding-bottom: 0px;
     font-size: 32px;
-    margin-top: 40px;
 }
 
 .sidebar a {
-    display: block;
-    padding: 10px 20px;
+    display: flex;
     color: #fff;
     text-decoration: none;
     text-align: center;
+    position: relative; /* Add relative positioning */
     margin-bottom: 10px; /* Add margin between links */
-    transition: margin-left 0.3s;
-    border-bottom: 2px solid #fff;
-    padding: 10px;
-    margin-left: 20px;
-    margin-right: 20px;
+    align-items: center;
+    padding: 12px 15px;
+    width: 70%;
+    left: 5%;
 }
 
 .sidebar a:hover {
     color: #495057;
-    margin-left: 50px;
+    margin-left: 10px;
     transition: 0.5s;
 }
 
@@ -69,6 +110,7 @@ body {
     color: #fff;
     font-size: 10px;
     padding: 5px; /* Ensure padding for sticky footer */
+    bottom: 0;
 }
 
 .content {
@@ -104,74 +146,50 @@ body {
     left: 10px;
 }
 
-.body-container {
-    margin-top: 50px;
-    margin-left: 20px;
-    margin-right: 20px;
-    width: 80vw;
-}
-
 
 .rounded-container {
     background-color: #212529;
-    padding: 10px 20px; /* Add padding for better spacing inside the labels */
+    padding: 10px;  /*Add padding for better spacing inside the labels */
     text-align: center;
     flex: 1; /* Make each label take an equal amount of space */
-    margin: 0 10px; /* Add space between the labels */
+    margin: 0 10px;  /*Add space between the labels */
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
     border-right: 10px solid #10b010;
-    width: 350px;
     animation-duration: 2s;
     animation-name: slidein;
 }
 .rounded-container1 {
     background-color: #212529;
-    padding: 10px 20px; /* Add padding for better spacing inside the labels */
+    padding: 10px;  /*Add padding for better spacing inside the labels */
     text-align: center;
     flex: 1; /* Make each label take an equal amount of space */
-    margin: 0 10px; /* Add space between the labels */
+    margin: 0 10px;  /*Add space between the labels */
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
     border-right: 10px solid #ff0000;
-    width: 350px;
     animation-duration: 2s;
     animation-name: slidein;
 }
 .rounded-container2 {
     background-color: #212529;
-    padding: 10px 20px; /* Add padding for better spacing inside the labels */
+    padding: 10px;  /*Add padding for better spacing inside the labels */
     text-align: center;
     flex: 1; /* Make each label take an equal amount of space */
-    margin: 0 10px; /* Add space between the labels */
+    margin: 0 10px;  /*Add space between the labels */
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
     border-right: 10px solid #1500ff;
-    width: 350px;
     animation-duration: 2s;
     animation-name: slidein;
 }
-.rounded-container3 {
-    background-color: #212529;
-    padding: 10px 20px; /* Add padding for better spacing inside the labels */
-    text-align: center;
-    flex: 1; /* Make each label take an equal amount of space */
-    margin: 0 10px; /* Add space between the labels */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    border-right: 10px solid #fffb00;
-    width: 350px;
-    animation-duration: 2s;
-    animation-name: slidein;
-}
+
 .sticky {
     text-align: left;
     color: #fff;
@@ -223,28 +241,12 @@ body {
     cursor: pointer;
 }
 
-.pie-chart-div {
-        display: flex;
-        justify-content: space-evenly;
-        border: none;
-        flex-direction: row;
-        margin-top: 3vh;
-        background-color: #212529;
-        width:101.5%;
-        margin-left: 0.6vw;
-        animation-duration: 2s;
-        animation-name: slide-up;
-        border-right: 10px solid #e707cc;
-        margin-bottom: 10px;
-       /* border-radius: 15px; */
-       /* padding: 15px;
-        margin-left: 5px; */
-}
-
 .stats-container {
-    width: 83vw;
+    width: 100%;
+    margin: auto;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    margin-bottom: 2vh;
 }
 
 .table-div {
@@ -258,8 +260,35 @@ body {
     animation-name: slide-up;
 }
 
+.pie-chart-div {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    margin: 2vh auto;
+    width: 98.5%;
+    border-right: 10px solid #e707cc;
+    background-color: #212529;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.appliance-energy-div {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    margin: 2vh auto;
+    width: 98.5%;
+    border-right: 10px solid #e7e307;
+    background-color: #212529;
+    padding: 20px;
+    box-sizing: border-box;
+    animation-duration: 2s;
+    animation-name: slidein;
+
+}
+
 .single-pie {
-    width: 50%;
+    width: 48%;
 }
 
 .greeting-bar {
@@ -274,6 +303,8 @@ body {
     z-index: 1000;
     font-size: 16px;
     margin-bottom: 20px;
+    justify-content: flex-end;
+    align-items: center;
 }
 .table {
     width: 100%;

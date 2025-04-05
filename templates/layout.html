@@ -16,6 +16,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <!-- Optional: Customize Datepicker theme -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css">
+    <link rel="icon" href="{% static 'css/favicon.ico' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -24,17 +25,17 @@
     <div class="greeting-bar" id="greeting-bar"></div>
     <div class="sidebar">
         <h1>PowerPay Africa</h1>
-        <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}"><i class="fa fa-home" aria-hidden="true"></i>  Home</a>
-        <a href="{% url 'connections_page' %}"><i class="fa fa-plug" aria-hidden="true"></i> Connections</a>
-        <a href="https://powerpayafrica.com/new-ticket/" target="_blank" rel="noopener noreferrer"><i class="fa fa-phone" aria-hidden="true"></i> Support</a>
+        <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active-link{% endif %}"><i class="fa fa-home" aria-hidden="true" style="margin-right:5px;"></i>  Home</a>
+        <a href="{% url 'connections_page' %}" class="{% if request.resolver_match.url_name == 'connections_page' or request.resolver_match.url_name == 'connection_data_page' %}active-link{% endif %}"><i class="fa fa-plug" aria-hidden="true" style="margin-right:5px;"></i> Connections</a>
+        <a href="https://powerpayafrica.com/new-ticket/" target="_blank" rel="noopener noreferrer"><i class="fa fa-phone" aria-hidden="true" style="margin-right:5px;"></i> Support</a>
         {% if user.is_authenticated %}
-            <a href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+            <a href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true" style="margin-right:5px;"></i> Logout</a>
         {% else %}
-            <a href="{% url 'login' %}"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+            <a href="{% url 'login' %}"><i class="fa fa-sign-in" aria-hidden="true" style="margin-right:5px;"></i> Login</a>
         {% endif %}
-        <h5 class="sticky">© 2024 Powerpay Africa. All Rights Reserved</h5>
+        <h5 class="sticky"><i class="fa fa-copyright" aria-hidden="true" style="margin-right:5px;"></i> 2024 Powerpay Africa. All Rights Reserved </h5>
     </div>
-    <main>
+    <main class="justbody">
         <!-- <span class="collapse-btn" onclick="toggleSidebar()">&#9776;</span> -->
         {% block content %}
         {% endblock %}

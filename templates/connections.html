@@ -10,7 +10,7 @@
     <div class="search-container">
         <!-- Search form -->
         <form method="get" action="{% url 'connections_page' %}">
-            <input type="text" name="q" value="{{ query }}" placeholder="Search by name, reference, or meter number">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search by name, accountID, or meter number">
             <button type="submit"><i class="fas fa-search"></i> Search</button>
             <a href="{% url 'connections_page' %}" class="clear-search"><i class="fa fa-eraser" aria-hidden="true"></i> Clear</a>
         </form>
@@ -20,7 +20,7 @@
         <thead>
             <tr>
                 <th class="table_headers">Customer Name</th>
-                <th class="table_headers">Customer Reference</th>
+                <th class="table_headers">Customer Account ID</th>
                 <th class="table_headers">Meter Number</th>
                 <th class="table_headers">Actions</th>
             </tr>
@@ -29,7 +29,7 @@
             {% for row in connections_table %}
             <tr>
                 <td class="table_content">{{ row.name }}</td>
-                <td class="table_content">{{ row.reference }}</td>
+                <td class="table_content">{{ row.accountID }}</td>
                 <td class="table_content">{{ row.meterNumber }}</td>
                 <td class="table_content"><a href="{% url 'connection_data_page' meter_number=row.meterNumber %}" class="details-link">See more</a></td>
             {% endfor %}
