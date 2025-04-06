@@ -1,0 +1,72 @@
+<!-- Hidden element to store username -->
+<input type="hidden" id="username-input" value="{{ username }}">
+<input type="hidden" id="p-input" value="{{ p }}">
+
+<!-- HTMX trigger for popup -->
+<p id="tnc-trigger" hx-trigger="load"></p>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        const username = document.getElementById("username-input").value;
+        const p = document.getElementById("p-input").value;
+    
+        const result = await Swal.fire({
+            title: "Terms and Conditions",
+            html: `
+                <p>Please read and accept the terms and conditions to proceed.</p>
+                <label style="display: flex; align-items: center; gap: 5px; margin-left:40px;">
+                    <input type="checkbox" id="tnc-checkbox">
+                    <span>I agree with the <a href="{% url 'terms_of_service' %}" target="_blank" rel="noopener noreferrer">terms and conditions</a></span>
+                </label>
+            `,
+            icon: "info",
+            confirmButtonText: "Continue",
+            showCancelButton: true,  // Allows the user to dismiss the popup
+            allowOutsideClick: false, // Prevents dismissing by clicking outside
+            allowEscapeKey: false, // Prevents dismissing by pressing escape
+            preConfirm: () => {
+                if (!document.getElementById("tnc-checkbox").checked) {
+                    Swal.showValidationMessage("You need to agree with T&C");
+                    return false;
+                }
+                return true;
+            }
+        });
+
+        // If user dismisses (clicks cancel, ESC, or outside the modal), redirect to login
+        if (result.dismiss) {
+            window.location.href = "{% url 'login' %}";
+            return;
+        }
+
+        // If user confirms (agrees to terms), send a request to accept
+        if (result.isConfirmed) {
+            fetch("{% url 'accept_tnc' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    accepted: true,
+                    username: username,
+                    p: p
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Response Data:", data);
+                if (data.success && data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    Swal.fire("Error", data.error || "Something went wrong.", "error");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                Swal.fire("Error", "Could not process your request.", "error");
+            });
+        }
+    });
+</script>

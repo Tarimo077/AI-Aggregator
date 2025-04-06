@@ -21,6 +21,10 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.homepage, name='home'),
+    path('terms_of_service/', views.terms_of_service, name='terms_of_service'),
+    path('accept_tnc/', views.accept_tnc, name='accept_tnc'),
+    path('profile/', views.profile_view, name='profile'),
+    path('profile/edit/', views.edit_profile, name="edit_profile"),
     path('connections/', views.connections_page, name='connections_page'),
     path('connection/<str:meter_number>/', views.connection_data_page,name='connection_data_page'),
     path('login/', views.login_page, name='login'),

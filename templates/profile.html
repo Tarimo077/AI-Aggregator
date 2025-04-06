@@ -1,0 +1,115 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Kudura: My Profile
+{% endblock %}
+
+{% block content %}
+    <h2><i class="fa fa-user" aria-hidden="true" style='color:#fff'></i> My Profile</h2>
+
+     <!-- Profile Edit Form -->
+     <form id="profile-form" method="POST" action="{% url 'edit_profile' %}">
+        {% csrf_token %}
+        <div style="display: flex; gap: 20px; width: 100%; justify-content: space-between;">
+            <!-- First Column -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 10px; border: 3px solid #fff; 
+                        border-radius: 10px; padding: 50px;">
+                <label>Organization Name:</label>
+                <input type="text" id="org_name" name="org_name" required value="{{ profile.org_name|default:'' }}" style="width: 100%;">
+
+                <label style="margin-top:20px;">Organization Address:</label>
+                <input type="text" id="org_address" name="org_address" required value="{{ profile.org_address|default:'' }}" style="width: 100%;">
+            </div>
+
+            <!-- Second Column -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 10px; border: 3px solid #fff; 
+                        border-radius: 10px; padding: 50px;">
+                <label>Organization Contact:</label>
+                <input type="text" id="org_phone_number" name="org_phone_number" required value="{{ profile.org_phone_number|default:'' }}" style="width: 100%;">
+
+                <label style="margin-top:20px;">Organization Email:</label>
+                <input type="email" id="org_email" name="org_email" required value="{{ profile.org_email|default:'' }}" style="width: 100%;">
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" id="save-btn" style="background-color: #212529; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                <i class="fa fa-save" aria-hidden="true" style="margin-right:10px;"></i> Save Changes
+            </button>
+        </div>
+    </form>
+
+    <style>
+        input {
+            border-radius: 5px;
+            border: 2px solid #000;
+            height: 30px;
+            padding: 5px;
+        }
+
+        button:hover {
+            background-color: #000;
+        }
+        .custom-swal {
+            background-color: #212529 !important; /* light green background */
+            color: #fff !important;              /* default text color */
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .custom-swal-title {
+            color: #fff !important;           /* green title */
+            font-weight: bold;
+        }
+        
+        .custom-swal-text {
+            color: #fff !important;              /* text inside the modal */
+        }
+        
+    </style>
+    <!-- SweetAlert Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- JavaScript to handle Swal confirmation -->
+    <script>
+        document.getElementById("profile-form").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent form submission
+    
+            document.body.classList.add("swal-active"); // Mark that Swal is active
+            var spinner = document.getElementById("spinner");
+            if (spinner) {
+                spinner.style.display = "none"; // Ensure spinner is hidden
+            }
+    
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to save these changes?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#0ead00",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, save it!",
+                customClass: {
+                    popup: 'custom-swal',
+                    title: 'custom-swal-title',
+                    htmlContainer: 'custom-swal-text',
+                }
+            }).then((result) => {
+                document.body.classList.remove("swal-active"); // Remove flag when Swal closes
+    
+                if (result.isConfirmed) {
+                    if (spinner) {
+                        spinner.style.display = "block"; // Show spinner only on actual submission
+                    }
+                    event.target.submit();
+                }
+                else {
+                    location.reload();
+                }
+            });
+        });
+    </script>
+    
+    
+{% endblock %}

@@ -265,7 +265,7 @@ body {
     justify-content: space-between;
     flex-direction: row;
     margin: 2vh auto;
-    width: 98.5%;
+    width: 98.8%;
     border-right: 10px solid #e707cc;
     background-color: #212529;
     padding: 10px;
@@ -277,7 +277,7 @@ body {
     justify-content: space-between;
     flex-direction: row;
     margin: 2vh auto;
-    width: 98.5%;
+    width: 98.8%;
     border-right: 10px solid #e7e307;
     background-color: #212529;
     padding: 20px;
@@ -293,7 +293,7 @@ body {
 
 .greeting-bar {
     background-color: #212529;
-    color: white;
+    color: #fff;
     padding: 5px;
     text-align: right;
     position: fixed;
@@ -302,10 +302,88 @@ body {
     left: 0;
     z-index: 1000;
     font-size: 16px;
-    margin-bottom: 20px;
+    display: flex;
     justify-content: flex-end;
     align-items: center;
 }
+
+/* Ensure the user button is perfectly round */
+.user-menu {
+    position: relative;
+    display: inline-block;
+    margin-right: 15px; /* Adjust spacing */
+}
+
+#user-button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background-color: #495057; /* White for contrast */
+    color: #fff; /* Green icon */
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Dropdown should appear BELOW the button */
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 40px; /* Moves dropdown below button */
+    right: 0;
+    background-color: #212529;
+    min-width: 250px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    border-radius: 5px;
+    overflow: hidden;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    padding: 10px;
+}
+
+/* Style dropdown links */
+.user-dropdown a {
+    display: block;
+    padding: 10px 15px;
+    color: #fff;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.user-dropdown a:hover {
+    color: #ccc;
+    margin-left: 10px;
+    transition: 0.5s;
+
+}
+
+.dropdown-divider {
+    margin: 10px 10px; /* Adds space from both ends */
+    border: none;
+    border-top: 2px solid #fff; /* Light grey divider */
+}
+
+.wave-hand {
+    display: inline-block;
+    animation: wave-animation 1.2s infinite ease-in-out;
+}
+
+@keyframes wave-animation {
+    0% { transform: rotate(0deg); }
+    20% { transform: rotate(-25deg); }
+    40% { transform: rotate(20deg); }
+    60% { transform: rotate(-25deg); }
+    80% { transform: rotate(20deg); }
+    100% { transform: rotate(0deg); }
+}
+
+
 .table {
     width: 100%;
     margin-bottom: 20px;

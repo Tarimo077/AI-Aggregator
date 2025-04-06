@@ -14,11 +14,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import os
+from django.http import JsonResponse
+import json
 from .preprocessing import preprocess_live_data
 from .data_ingestion import chunk_array
 from keras.models import load_model
 import numpy as np
 from collections import defaultdict
+from db.models import userProfile
 
 # Define paths to the model and scaler files
 #iso_forest_path = os.path.join(settings.BASE_DIR, 'models', 'iso_forest.pkl')
@@ -53,11 +56,62 @@ def login_page(request):
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
+            user_profile, created = userProfile.objects.get_or_create(user=user)
+            # If T&C not accepted, show popup (but don't log in yet)
+            if not user_profile.tnc_flag:
+                return render(request, 'partials/tnc_popup.html', {'username': username, 'p': password})
+
             login(request, user)
             return redirect('home')
         else:
             messages.error(request, 'Invalid username or password.')
     return render(request, 'login.html')
+
+def accept_tnc(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)  # Parse JSON body
+            username = data.get('username')
+            password = data.get('p')
+
+            user = authenticate(username=username, password=password)
+            if user:
+                user_profile, created = userProfile.objects.get_or_create(user=user)
+                user_profile.tnc_flag = True
+                user_profile.save()
+
+                login(request, user)
+                return JsonResponse({'success': True, 'redirect_url': '/'})  # Redirect to home_page
+
+            return JsonResponse({'error': 'User not found'}, status=404)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def terms_of_service(request):
+    return render(request, 'terms_of_service.html')
+
+@login_required
+def profile_view(request):
+    return render(request, 'profile.html')
+
+@login_required
+def edit_profile(request):
+    profile, created = userProfile.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        profile.org_name = request.POST.get("org_name", "")
+        profile.org_address = request.POST.get("org_address", "")
+        profile.org_phone_number = request.POST.get("org_phone_number", "")
+        profile.org_email = request.POST.get("org_email", "")
+        profile.save()
+        return redirect("profile")  # Redirect back to profile page
+
+    return render(request, "my_profile.html", {"profile": profile})
+
 
 @login_required
 def homepage(request):

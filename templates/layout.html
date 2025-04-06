@@ -20,19 +20,34 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="{% static 'js/htmx.min.js' %}" defer></script>
 </head>
 <body>
-    <div class="greeting-bar" id="greeting-bar"></div>
+    <div class="greeting-bar" id="greeting-bar">
+        <div id="greeting-text" style="margin-right:5px; color: #fff" > </div>
+    <div class="user-menu">
+        <button id="user-button">
+            <i class="fa fa-user"></i>
+        </button>
+        <div id="user-dropdown" class="user-dropdown">
+            <div  style="color: #fff; font-weight:bold; margin-bottom:10px;"><i class="fa fa-industry" aria-hidden="true" style="margin-right:10px;"></i>{{ profile.org_name }}</div>
+            <hr class="dropdown-divider">
+            <a href="{% url 'profile' %}"><i class="fa fa-user" aria-hidden="true" style="margin-right:10px;"></i>Profile</a>
+            <a href="https://powerpayafrica.com/new-ticket/" target="_blank" rel="noopener noreferrer"><i class="fa fa-ticket" aria-hidden="true" style="margin-right:10px;"></i> Support</a>
+            <a href="https://powerpayafrica.com" target="_blank" rel="noopener noreferrer"><i class="fa fa-globe" aria-hidden="true" style="margin-right:10px;"></i>Visit our Website</a>
+            <a href="{% url 'terms_of_service' %}" target="_blank" rel="noopener noreferrer"><i class="fa fa-file-text" aria-hidden="true" style="margin-right:10px;"></i>Terms of Service</a> 
+            <a href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true" style="margin-right:10px;"></i> Logout</a>
+            <hr class="dropdown-divider">
+            <div id="time-div" style="color: #fff; font-weight:bold; margin-bottom:10px;"> </div>
+        </div>
+    </div>        
+    </div>
+    </div>
+
     <div class="sidebar">
         <h1>PowerPay Africa</h1>
-        <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active-link{% endif %}"><i class="fa fa-home" aria-hidden="true" style="margin-right:5px;"></i>  Home</a>
-        <a href="{% url 'connections_page' %}" class="{% if request.resolver_match.url_name == 'connections_page' or request.resolver_match.url_name == 'connection_data_page' %}active-link{% endif %}"><i class="fa fa-plug" aria-hidden="true" style="margin-right:5px;"></i> Connections</a>
-        <a href="https://powerpayafrica.com/new-ticket/" target="_blank" rel="noopener noreferrer"><i class="fa fa-phone" aria-hidden="true" style="margin-right:5px;"></i> Support</a>
-        {% if user.is_authenticated %}
-            <a href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true" style="margin-right:5px;"></i> Logout</a>
-        {% else %}
-            <a href="{% url 'login' %}"><i class="fa fa-sign-in" aria-hidden="true" style="margin-right:5px;"></i> Login</a>
-        {% endif %}
+        <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active-link{% endif %}"><i class="fa fa-home" aria-hidden="true" style="margin-right:10px;"></i>  Home</a>
+        <a href="{% url 'connections_page' %}" class="{% if request.resolver_match.url_name == 'connections_page' or request.resolver_match.url_name == 'connection_data_page' %}active-link{% endif %}"><i class="fa fa-plug" aria-hidden="true" style="margin-right:10px;"></i> Connections</a>
         <h5 class="sticky"><i class="fa fa-copyright" aria-hidden="true" style="margin-right:5px;"></i> 2024 Powerpay Africa. All Rights Reserved </h5>
     </div>
     <main class="justbody">
@@ -47,21 +62,39 @@
         // Function to format the time
         function formatTime(date) {
             let hours = date.getHours();
+            //console.log("Original hours:", hours);
             let minutes = date.getMinutes();
             let seconds = date.getSeconds();
             let ampm = hours >= 12 ? 'PM' : 'AM';
-            
-            
-            // Properly handle 12 AM and 12 PM
-            //hours = hours % 12;
-            hours = hours === 0 ? 12 : hours; // the hour '0' should be '12'
-            
+            hours = hours % 12;
+            hours = hours===0 ? 12 : hours; // the hour '0' should be '12'
             minutes = minutes < 10 ? '0' + minutes : minutes;
             seconds = seconds < 10 ? '0' + seconds : seconds;
-            
             let strTime = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
             return strTime;
-        }        
+        }  
+        //user button
+        document.getElementById("user-button").addEventListener("click", function(event) {
+            event.stopPropagation(); // Prevent click from closing immediately
+            let dropdown = document.getElementById("user-dropdown");
+        
+            // Toggle visibility
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+            } else {
+                dropdown.style.display = "block";
+            }
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function(event) {
+            let dropdown = document.getElementById("user-dropdown");
+            let button = document.getElementById("user-button");
+        
+            if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.style.display = "none";
+            }
+        });     
 
         // Function to update the greeting message
         function updateGreeting() {
@@ -70,17 +103,19 @@
             let greeting;
 
             if (hours < 12) {
-                greeting = "👋 Good Morning";
+                greeting = " Good Morning";
             } else if (hours < 18) {
-                greeting = "👋 Good Afternoon";
+                greeting = " Good Afternoon";
             } else {
-                greeting = "👋 Good Evening";
+                greeting = " Good Evening";
             }
 
             // Assuming you have a variable `username` in your template context
             const username = "{{ user.first_name }}";
             const time = formatTime(now);
-            document.getElementById('greeting-bar').innerText = ` ⌚ ${time} | ${greeting}, ${username}`;
+            // Insert animated hand icon
+            document.getElementById('greeting-text').innerHTML = `<span class="wave-hand"><i class="fa fa-hand-paper" aria-hidden="true"></i></span> ${greeting}, ${username} |`;
+            document.getElementById('time-div').innerHTML = `<i class="fa fa-clock" aria-hidden="true" style="margin-right:10px;"></i> ${time}  `;
         }
 
         // Call the updateGreeting function initially
