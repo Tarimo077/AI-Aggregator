@@ -69,6 +69,7 @@
             <label style="font-size:17px;"><i class="fa fa-bolt" aria-hidden="true" style="color:#ff0000;font-size:5vh"></i> Energy Usage(kWh)<br><strong style="font-size:24px;color:#ff0000">{{ kwhUsed|floatformat:4 }}</strong></label>
         </div>
     </div>
+    {% if ml_pie%}
     <div class="pie-chart-div">
         <div class="single-pie">{{ consumption_pie|safe }}</div>
         <div class="single-pie">{{ ml_pie|safe }}</div>
@@ -91,7 +92,10 @@
             {% endif %}
         </div>
         {% endfor %}
-    </div>      
+    </div>   
+    {% else %}
+    <div class="rounded-container1"><strong style="text-align:center;padding:100px;"><i class="fa fa-exclamation-triangle" aria-hidden="true" style="color:#ff0000;font-size:5vh;margin-right:10px;"></i> No Meter Data to analyze for the selected range</strong></div>
+    {% endif %}   
     
     </div>
     <script>

@@ -118,42 +118,34 @@ def homepage(request):
     #range_value = request.GET.get('range', 9999999)
     range_value = request.GET.get('range', 5)
     data = fetch_data_index('kuduraLiveData', range_value)
-
-    if not data:
-        messages.warning(request, 'No data for the selected range. Showing default data.')
-        data = fetch_data_index('kuduraLiveData', 9999999)
-        range_value = 9999999
-
-    #df = pd.DataFrame(data)
-    #df['meterData'] = pd.DataFrame(data["meterData"])
-    meterData = pd.DataFrame(data["meterData"])
     customerData = pd.DataFrame(data["customerData"])
-    total_kwh_used = meterData["energy(kWh)"].sum()
     connections = len(customerData)
-    #total_kwh_bought = df['kwhPurchased'].sum()
-    # Merge customerData and meterData on 'meterNumber' to align the data
-    merged_data = pd.merge(meterData, customerData[['meterNumber', 'accountID']], on='meterNumber', how='left')
 
-# Create the legend field in the merged dataframe
-    merged_data['legend'] = merged_data["accountID"] + " (" + merged_data['meterNumber'] + ")"
+    if len(data["meterData"]) != 0:
+        meterData = pd.DataFrame(data["meterData"])
+        total_kwh_used = meterData["energy(kWh)"].sum()
+        merged_data = pd.merge(meterData, customerData[['meterNumber', 'accountID']], on='meterNumber', how='left')
 
-# Prepare inputs for pie chart
-    labels = merged_data['legend']
-    values = merged_data["energy(kWh)"]
+    # Create the legend field in the merged dataframe
+        merged_data['legend'] = merged_data["accountID"] + " (" + merged_data['meterNumber'] + ")"
 
-# Create the pie chart
-    consumption_pie = create_pie_chart(labels, values)
-    consumption_pie.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-                                 legend_font_color="#fff", title="ENERGY CONSUMPTION",
-                                 title_font_color="#fff", title_x=0.45, autosize=True,
-                                 annotations=[dict(text=str(round(total_kwh_used,4))+" KWH", x=0.5, y=0.5, showarrow=False)],
-                                 legend_title_text='Connections')
-    consumption_pie.update_traces(hole=.6, hovertemplate='<b>Customer Ref: %{label}<br>Energy: %{value} kWh</b>')
-    consumption_pie.update_annotations(font=dict(color="#fff"))
-    consumption_pie = pio.to_html(consumption_pie, full_html=False)
+    # Prepare inputs for pie chart
+        labels = merged_data['legend']
+        values = merged_data["energy(kWh)"]
 
-    appliance_percentages, appliance_energy, ml_pie = prepare_meterData(meterData)
-    context = {
+    # Create the pie chart
+        consumption_pie = create_pie_chart(labels, values)
+        consumption_pie.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                                    legend_font_color="#fff", title="ENERGY CONSUMPTION",
+                                    title_font_color="#fff", title_x=0.45, autosize=True,
+                                    annotations=[dict(text=str(round(total_kwh_used,4))+" KWH", x=0.5, y=0.5, showarrow=False)],
+                                    legend_title_text='Connections')
+        consumption_pie.update_traces(hole=.6, hovertemplate='<b>Customer Ref: %{label}<br>Energy: %{value} kWh</b>')
+        consumption_pie.update_annotations(font=dict(color="#fff"))
+        consumption_pie = pio.to_html(consumption_pie, full_html=False)
+
+        appliance_percentages, appliance_energy, ml_pie = prepare_meterData(meterData)
+        context = {
         "kwhUsed": total_kwh_used,
         "connections": connections,
         "selected_range": str(range_value),
@@ -161,7 +153,13 @@ def homepage(request):
         "ml_pie": ml_pie,
         "appliance_energy": appliance_energy,
         "appliance_percentages": appliance_percentages
-    }
+        }
+    else:
+        context = {
+        "kwhUsed": 0.0,
+        "connections": connections,
+        "selected_range": str(range_value)
+        }
 
     return render(request, "index.html", context)
 
@@ -220,7 +218,7 @@ def connections_page(request):
 
 @login_required
 def connection_data_page(request, meter_number):
-    range_value = request.GET.get('range', 9999999)
+    range_value = request.GET.get('range', 5)
     data = fetch_data_connection('kuduraConnections', 'meter='+str(meter_number)+'&range='+str(range_value))
     customerData = data["customerData"]
     meterData = pd.DataFrame(data["meterData"])

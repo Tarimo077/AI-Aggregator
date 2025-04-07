@@ -55,14 +55,14 @@ body {
 
 .active-link {
     background-color: #fff; /* Keep the highlight */
-    padding: 12px 15px;
+    padding: 12px;
     color: #212529 !important;
     font-weight: bold;
     position: relative; /* Needed for the pseudo-element */
     border-radius: 5px; /* Rounded corners on the left */
     display: flex; /* Ensure proper layout */
     align-items: center; /* Vertically center the text */
-    width: 50%; /* Restrict width to avoid full sidebar fill */
+    width: 30%; /* Restrict width to avoid full sidebar fill */
 }
 
 .active-link::before {
@@ -91,10 +91,10 @@ body {
     text-decoration: none;
     text-align: center;
     position: relative; /* Add relative positioning */
-    margin-bottom: 10px; /* Add margin between links */
+    margin: 10px; /* Add margin between links */
     align-items: center;
-    padding: 12px 15px;
-    width: 70%;
+    padding: 12px;
+    width: 60%;
     left: 5%;
 }
 
